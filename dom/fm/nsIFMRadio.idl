@@ -1,0 +1,41 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "nsISupports.idl"
+#include "nsIDOMEvent.idl"
+#include "nsIDOMEventTarget.idl"
+
+[scriptable, builtinclass, uuid(26288adc-d2c1-4fbc-86b5-ecd8173fbf90)]
+interface nsIFMRadio : nsIDOMEventTarget {
+    readonly attribute boolean enabled;
+
+    readonly attribute long frequency;
+
+    readonly attribute float signalStrength;
+
+    readonly attribute boolean isAntennaAvailable;
+
+    [implicit_jscontext]
+    void enable(in jsval settings);
+
+    void disable();
+
+    void seek(in short direction);
+
+    void cancelSeek();
+
+    [implicit_jscontext]
+    jsval getSettings();
+
+    void setFrequency(in long frequency);
+
+    attribute nsIDOMEventListener onantennastatechange;
+
+    attribute nsIDOMEventListener onseekcomplete;
+
+    attribute nsIDOMEventListener onenabled;
+
+    attribute nsIDOMEventListener ondisabled;
+};
+
