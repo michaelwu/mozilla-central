@@ -411,6 +411,74 @@ bool SetAlarm(int32_t aSeconds, int32_t aNanoseconds);
  */
 void SetProcessPriority(int aPid, hal::ProcessPriority aPriority);
 
+/**
+ * Register an observer for the FM radio.
+ */
+void RegisterFMRadioObserver(hal::FMRadioObserver *aRadioObserver);
+
+/**
+ * Unregister the observer for the FM radio.
+ */
+void UnregisterFMRadioObserver(hal::FMRadioObserver *aRadioObserver);
+
+/**
+ * Notify the operation status of FM radio, EnableFMRadio, DisableFMRadio,
+ * and FMRadioSeek.
+ */
+void NotifyFMRadioStatus(const hal::FMRadioOperationInformation& aRadioState);
+
+/**
+ * Enable FM radio. Apps should provide the information about, upper limit,
+ * lower limit and the different between 2 frequency.
+ */
+void EnableFMRadio(const hal::FMRadioSettings& aInfo);
+
+/**
+ * Disable FM radio.
+ */
+void DisableFMRadio();
+
+/**
+ * Seek an available FM radio station.
+ *
+ */
+void FMRadioSeek(const hal::FMRadioSeekDirection& aDirection);
+
+/**
+ * Get the FM radio settings.
+ */
+void GetFMRadioSettings(hal::FMRadioSettings* aInfo);
+
+/**
+ * Set FM radio frequency.
+ */
+void SetFMRadioFrequency(const uint32_t frequency);
+
+/**
+ * Get FM radio frequency.
+ */
+uint32_t GetFMRadioFrequency();
+
+/**
+ * Get FM radio power state
+ */
+bool IsFMRadioOn();
+
+/**
+ * Get FM radio signal strength
+ */
+uint32_t GetFMRadioSignalStrength();
+
+/**
+ * Cancel FM radio seeking
+ */
+void CancelFMRadioSeek();
+
+/**
+ * Get FM radio band settings by country.
+ */
+hal::FMRadioSettings GetFMBandSettings(hal::FMRadioBandType aBand);
+
 } // namespace MOZ_HAL_NAMESPACE
 } // namespace mozilla
 
