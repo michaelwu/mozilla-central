@@ -4,7 +4,7 @@
 
 "use strict"
 
-let DEBUG = 0;
+let DEBUG = 1;
 if (DEBUG)
   debug = function(s) { dump("-*- Fallback FMRadioService component: " + s + "\n");  };
 else
@@ -361,12 +361,6 @@ let FMRadioService = {
         } else {
           _enabling = true;
 
-          FMRadio.enable({
-            lowerLimit: FM_BANDS[_currentBand].lower,
-            upperLimit: FM_BANDS[_currentBand].upper,
-            spaceType:  _currentSpaceType   // 100KHz by default
-          });
-
           FMRadio.addEventListener("enabled", function on_enabled() {
             debug("FM Radio is enabled!");
             FMRadio.removeEventListener("enabled", on_enabled);
@@ -382,6 +376,13 @@ let FMRadioService = {
             // Start to check signal strength after the enable action completes.
             self._startSignalChecking();
           });
+
+          FMRadio.enable({
+            lowerLimit: FM_BANDS[_currentBand].lower,
+            upperLimit: FM_BANDS[_currentBand].upper,
+            spaceType:  _currentSpaceType   // 100KHz by default
+          });
+
         }
         break;
       }
@@ -390,7 +391,6 @@ let FMRadioService = {
         if (!_isEnabled) {
           self._sendMessage("DOMFMRadio:disable:Return", false, null, msg);
         } else {
-          FMRadio.disable();
           FMRadio.addEventListener("disabled", function on_disabled() {
             debug("FM Radio is disabled!");
             FMRadio.removeEventListener("disabled", on_disabled);
@@ -404,6 +404,7 @@ let FMRadioService = {
             // event will be fired, execute the seek callback manually.
             onSeekComplete();
           });
+          FMRadio.disable();
         }
         break;
       case "DOMFMRadio:setFrequency": {
