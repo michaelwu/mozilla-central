@@ -116,9 +116,9 @@ NS_IMETHODIMP FMRadio::GetIsAntennaAvailable(bool *aIsAvailable)
 }
 
 /* readonly attribute long frequency; */
-NS_IMETHODIMP FMRadio::GetFrequency(PRInt32 *aFrequency)
+NS_IMETHODIMP FMRadio::GetFrequency(int32_t *aFrequency)
 {
-  GetFMRadioFrequency(aFrequency);
+  *aFrequency = GetFMRadioFrequency();
   return NS_OK;
 }
 
@@ -128,7 +128,7 @@ NS_IMETHODIMP FMRadio::GetSignalStrength(float *aSignalStrength)
   uint32_t signalStrength;
 
   // The range of signal strengh is [0-100], higher than 100 means signal is strong.
-  GetFMRadioSignalStrength(&signalStrength);
+  signalStrength = GetFMRadioSignalStrength();
 
   *aSignalStrength = (signalStrength > 100 ? 100 : signalStrength) / 100.0;
 
@@ -183,7 +183,7 @@ NS_IMETHODIMP FMRadio::CancelSeek()
 }
 
 /* void seek (in short direction); */
-NS_IMETHODIMP FMRadio::Seek(PRInt16 direction)
+NS_IMETHODIMP FMRadio::Seek(int16_t direction)
 {
   if (direction == (int)FM_RADIO_SEEK_DIRECTION_UP) {
     FMRadioSeek(FM_RADIO_SEEK_DIRECTION_UP);
@@ -216,7 +216,7 @@ NS_IMETHODIMP FMRadio::GetSettings(JSContext* cx, JS::Value *_retval)
 }
 
 /* void setFrequency (in short frequency); */
-NS_IMETHODIMP FMRadio::SetFrequency(PRInt32 frequency)
+NS_IMETHODIMP FMRadio::SetFrequency(int32_t frequency)
 {
   SetFMRadioFrequency(frequency);
   return NS_OK;

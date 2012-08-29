@@ -524,7 +524,7 @@ public:
         size_t* buffSize);
 
     static status_t setVoiceVolume(float volume);
-    static status_t setFmVolume(float volume);
+    static status_t setFmVolume(float volume) __attribute__((weak));
 
     // return the number of audio frames written by AudioFlinger to audio HAL and
     // audio dsp to DAC since the output on which the specificed stream is playing
