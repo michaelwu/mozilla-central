@@ -45,11 +45,16 @@ public:
   ~AudioManager();
 
   static void SetAudioRoute(int aRoutes);
+  static NS_IMETHODIMP EnableFM();
+  static NS_IMETHODIMP DisableFM();
+
 protected:
   int32_t mPhoneState;
 
 private:
   nsAutoPtr<mozilla::hal::SwitchObserver> mObserver;
+  static bool mFmEnabled;
+
 };
 
 } /* namespace gonk */

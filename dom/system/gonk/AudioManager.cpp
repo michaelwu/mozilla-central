@@ -73,6 +73,8 @@ AudioManager::~AudioManager() {
   UnregisterSwitchObserver(SWITCH_HEADPHONES, mObserver);
 }
 
+bool AudioManager::mFmEnabled = false;
+
 NS_IMETHODIMP
 AudioManager::GetMicrophoneMuted(bool* aMicrophoneMuted)
 {
@@ -110,6 +112,11 @@ AudioManager::SetMasterVolume(float aMasterVolume)
   if (AudioSystem::setVoiceVolume(aMasterVolume)) {
     return NS_ERROR_FAILURE;
   }
+
+  if (mFmEnabled && AudioSystem::setFmVolume(aMasterVolume)) {
+    return NS_ERROR_FAILURE; 
+  }
+
   return NS_OK;
 }
 
@@ -211,5 +218,45 @@ AudioManager::SetAudioRoute(int aRoutes) {
         GetRoutingMode(aRoutes) == AudioSystem::DEVICE_OUT_WIRED_HEADSET ? 
         AUDIO_POLICY_DEVICE_STATE_AVAILABLE : AUDIO_POLICY_DEVICE_STATE_UNAVAILABLE,
         "");
+    
+    // The audio volume is not consistent when we plug and unplug the headset.
+    // Set the fm volume again here.
+    if (mFmEnabled) {
+      float masterVolume;
+      AudioSystem::getMasterVolume(&masterVolume);
+      AudioSystem::setFmVolume(masterVolume);
+    }
   }
 }
+
+NS_IMETHODIMP
+AudioManager::EnableFM()
+{
+  if (static_cast<
+      status_t (*) (AudioSystem::audio_devices, AudioSystem::device_connection_state, const char *)
+      >(AudioSystem::setDeviceConnectionState)) {
+    mFmEnabled = true;
+    InternalSetAudioRoutes(GetCurrentSwitchState(SWITCH_HEADPHONES));
+    return AudioSystem::setDeviceConnectionState(AUDIO_DEVICE_OUT_FM, 
+           AUDIO_POLICY_DEVICE_STATE_AVAILABLE, "") == NO_ERROR ? NS_OK : NS_ERROR_FAILURE;
+  } else {
+    return NS_ERROR_NOT_IMPLEMENTED;
+  }
+}
+
+NS_IMETHODIMP
+AudioManager::DisableFM()
+{
+  if (static_cast<
+      status_t (*) (AudioSystem::audio_devices, AudioSystem::device_connection_state, const char *)
+      >(AudioSystem::setDeviceConnectionState)) {
+    mFmEnabled = false;
+    AudioSystem::setDeviceConnectionState(AUDIO_DEVICE_OUT_FM,
+           AUDIO_POLICY_DEVICE_STATE_UNAVAILABLE, "");
+    InternalSetAudioRoutes(GetCurrentSwitchState(SWITCH_HEADPHONES));
+    return NS_OK;
+  } else {
+    return NS_ERROR_NOT_IMPLEMENTED;
+  }
+}
+
