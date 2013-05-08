@@ -18,7 +18,6 @@
 #define mozilla_HwcComposer2D
 
 #include "Composer2D.h"
-#include "HWComposer.h"
 #include "Layers.h"
 #include <vector>
 #include <list>
@@ -34,8 +33,7 @@ class Layer;
 //used to decribe the complex visible region of a layer
 typedef std::vector<hwc_rect_t> RectVector;
 
-class HwcComposer2D : public android::HWComposer,
-                      public mozilla::layers::Composer2D {
+class HwcComposer2D : public mozilla::layers::Composer2D {
 public:
     HwcComposer2D();
     virtual ~HwcComposer2D();

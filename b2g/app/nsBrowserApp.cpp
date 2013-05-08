@@ -29,9 +29,9 @@
 #define strcasecmp _stricmp
 #endif
 
-#ifdef MOZ_WIDGET_GONK
-#include "BootAnimation.h"
-#endif
+//#ifdef MOZ_WIDGET_GONK
+//#include "BootAnimation.h"
+//#endif
 
 #include "BinaryPath.h"
 
@@ -150,7 +150,7 @@ static int do_main(int argc, char* argv[])
 
 #ifdef MOZ_WIDGET_GONK
   /* Called to start the boot animation */
-  (void) NativeWindow();
+//  (void) NativeWindow();
 #endif
 
   if (appini) {

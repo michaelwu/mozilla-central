@@ -17,6 +17,6 @@
 MODULE = 'widget'
 
 EXPORTS += [
-    'OrientationObserver.h',
+    'OrientationObserver.h'
 ]
 

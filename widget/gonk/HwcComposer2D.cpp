@@ -483,13 +483,15 @@ HwcComposer2D::TryRender(Layer* aRoot,
         return false;
     }
 
+/*
     if (mHwc->set(mHwc, mDpy, mSur, mList)) {
         LOGE("Hardware device failed to render");
         return false;
     }
+*/
 
     LOGD("Frame rendered");
-    return true;
+    return false;
 }
 
 } // namespace mozilla

@@ -26,7 +26,7 @@ endif
 
 CPPSRCS = nsBrowserApp.cpp
 
-ifeq (gonk,$(MOZ_WIDGET_TOOLKIT))
+ifeq (gnk,$(MOZ_WIDGET_TOOLKIT))
 CPPSRCS += BootAnimation.cpp
 LIBS += \
   -lui \
