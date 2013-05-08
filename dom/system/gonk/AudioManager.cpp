@@ -217,8 +217,10 @@ AudioManager::AudioManager() : mPhoneState(PHONE_STATE_CURRENT),
                                   sMaxStreamVolumeTbl[loop]);
   }
   // Force publicnotification to output at maximal volume
+#if ANDROID_VERSION < 17
   AudioSystem::setStreamVolumeIndex(static_cast<audio_stream_type_t>(AUDIO_STREAM_ENFORCED_AUDIBLE),
                                     sMaxStreamVolumeTbl[AUDIO_STREAM_ENFORCED_AUDIBLE]);
+#endif
 }
 
 AudioManager::~AudioManager() {
@@ -308,9 +310,11 @@ AudioManager::SetPhoneState(int32_t aState)
     return NS_OK;
   }
 
+#if ANDROID_VERSION < 17
   if (AudioSystem::setPhoneState(aState)) {
     return NS_ERROR_FAILURE;
   }
+#endif
 
   mPhoneState = aState;
 
@@ -409,8 +413,10 @@ AudioManager::SetFmRadioAudioEnabled(bool aFmRadioAudioEnabled)
     // sync volume with music after powering on fm radio
     if (aFmRadioAudioEnabled) {
       int32_t volIndex = 0;
+#if ANDROID_VERSION < 17
       AudioSystem::getStreamVolumeIndex(static_cast<audio_stream_type_t>(AUDIO_STREAM_MUSIC), &volIndex);
       AudioSystem::setStreamVolumeIndex(static_cast<audio_stream_type_t>(AUDIO_STREAM_FM), volIndex);
+#endif
     }
     return NS_OK;
   } else {
@@ -420,8 +426,11 @@ AudioManager::SetFmRadioAudioEnabled(bool aFmRadioAudioEnabled)
 
 NS_IMETHODIMP
 AudioManager::SetStreamVolumeIndex(int32_t aStream, int32_t aIndex) {
-  status_t status =
-    AudioSystem::setStreamVolumeIndex(static_cast<audio_stream_type_t>(aStream), aIndex);
+  status_t status = 0;
+
+#if ANDROID_VERSION < 17
+  AudioSystem::setStreamVolumeIndex(static_cast<audio_stream_type_t>(aStream), aIndex);
+#endif
 
   // sync the fm stream volume with music volume, except set fm volume by audioChannelServices
   if (aStream == AUDIO_STREAM_FM && IsDeviceOn(AUDIO_DEVICE_OUT_FM)) {
@@ -429,7 +438,9 @@ AudioManager::SetStreamVolumeIndex(int32_t aStream, int32_t aIndex) {
   }
   // sync fm volume with music stream type
   if (aStream == AUDIO_STREAM_MUSIC && IsDeviceOn(AUDIO_DEVICE_OUT_FM) && !mFMChannelIsMuted) {
+#if ANDROID_VERSION < 17
     AudioSystem::setStreamVolumeIndex(static_cast<audio_stream_type_t>(AUDIO_STREAM_FM), aIndex);
+#endif
   }
 
   return status ? NS_ERROR_FAILURE : NS_OK;
@@ -437,8 +448,10 @@ AudioManager::SetStreamVolumeIndex(int32_t aStream, int32_t aIndex) {
 
 NS_IMETHODIMP
 AudioManager::GetStreamVolumeIndex(int32_t aStream, int32_t* aIndex) {
-  status_t status =
-    AudioSystem::getStreamVolumeIndex(static_cast<audio_stream_type_t>(aStream), aIndex);
+  status_t status = 0;
+#if ANDROID_VERSION < 17
+  AudioSystem::getStreamVolumeIndex(static_cast<audio_stream_type_t>(aStream), aIndex);
+#endif
   return status ? NS_ERROR_FAILURE : NS_OK;
 }
 
